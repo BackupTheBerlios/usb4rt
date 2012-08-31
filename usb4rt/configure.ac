@@ -129,36 +129,10 @@ fi
 AC_MSG_RESULT([${CONFIG_USB4RT_LINUXDIR}/.config])
 
 dnl -----------------------------------------------------------------
-dnl get linux version
-dnl -----------------------------------------------------------------
-
-AC_MSG_CHECKING([for Linux version])
-LINUX_VERSION="` cat ${CONFIG_USB4RT_LINUXDIR}/.config | \
-                 grep "# Linux kernel version:" | \
-                 gawk -F ": " '{print $2}'`"
-AC_MSG_RESULT([${LINUX_VERSION}])
-
-dnl -----------------------------------------------------------------
-dnl check version
-dnl -----------------------------------------------------------------
-
-case "${LINUX_VERSION}" in
-    2.6.*)
-        ;;
-    *)
-        AC_MSG_ERROR([*** Unsupported kernel version $LINUX_VERSION])
-        ;;
-esac
-
-dnl -----------------------------------------------------------------
-dnl loading linux config
+dnl  checking needed Xenomai and skins in linux config
 dnl -----------------------------------------------------------------
 
 . ${CONFIG_USB4RT_LINUXDIR}/.config
-
-dnl -----------------------------------------------------------------
-dnl  checking needed Xenomai and skins in linux config
-dnl -----------------------------------------------------------------
 
 AC_MSG_CHECKING([for Xenomai])
     case "${CONFIG_XENOMAI}" in

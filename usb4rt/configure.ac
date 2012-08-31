@@ -146,6 +146,16 @@ AC_MSG_CHECKING([for Xenomai native skin])
         *) AC_MSG_ERROR([*** Please enable native skin]) ;;
     esac
 
+dnl -----------------------------------------------------------------
+dnl  looking for Linux source dir
+dnl -----------------------------------------------------------------
+
+if test -L ${CONFIG_USB4RT_LINUXDIR}/source ; then
+    CONFIG_USB4RT_LINUXSRC=`readlink ${CONFIG_USB4RT_LINUXDIR}/source`
+else
+    CONFIG_USB4RT_LINUXSRC=${CONFIG_USB4RT_LINUXDIR}
+fi
+
 dnl ======================================================================
 dnl  XENOMAI userspace
 dnl ======================================================================
@@ -217,7 +227,7 @@ dnl -----------------------------------------------------------------
 dnl  get some more information about Xenomai
 dnl -----------------------------------------------------------------
 
-USB4RT_KMOD_CFLAGS="-I${CONFIG_USB4RT_LINUXDIR}/include/xenomai"
+USB4RT_KMOD_CFLAGS="-I${CONFIG_USB4RT_LINUXSRC}/include/xenomai"
 
 AC_MSG_CHECKING([usb4rt kernel compiler flags])
 AC_MSG_RESULT([$USB4RT_KMOD_CFLAGS])

@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.59)
+AC_PREREQ([2.68])
 
 AC_INIT([usb4rt],m4_normalize(m4_include([config/version])),usb4rt-users@lists.berlios.de)
 
@@ -45,7 +45,7 @@ AC_DEFINE_UNQUOTED(CONFIG_USB4RT_COMPILER, "`$CC -v 2>&1 | tail -n 1`" , [Compil
 
 AM_INIT_AUTOMAKE([foreign no-exeext dist-bzip2])
 AM_MAINTAINER_MODE
-AC_PROG_LIBTOOL
+LT_INIT
 AM_PROG_AS
 AC_SUBST(LD)
 

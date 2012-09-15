@@ -290,7 +290,10 @@ dnl ============================================================================
 USB4RT_MODULE_EXT=.ko
 USB4RT_KBUILD_ENV='src2obj = $(patsubst %.$(1),%.o,$(filter %.$(1),$(call notdir,$(2))))'
 USB4RT_KBUILD_CMD=" \
-  @for src in \$(filter-out FORCE, \$^); do               \
+  @if test \\! -r Module.symvers; then                    \
+    \$(LN_S) \"\`cd \$(top_builddir) && pwd\`/Module.symvers\" .; \
+  fi;                                                     \
+  for src in \$(filter-out FORCE, \$^); do                \
     if test \\! -r \`basename \$\$src\`; then             \
       \$(LN_S) \$\$src;                                   \
     fi;                                                   \

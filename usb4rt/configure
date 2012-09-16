@@ -1567,7 +1567,7 @@ Optional Features:
   --disable-libtool-lock  avoid locking (might break parallel builds)
   --disable-app-ping      Disable realtime usb ping application
   --enable-drv-ftdi       Enable realtime ftdi_sio driver
-  --disable-dbg-common    Disable common debug messages
+  --enable-dbg-common     Enable common debug messages
   --enable-dbg-time       Enable time debug messages
   --enable-dbg-td         Enable transfer-descriptor debug messages
   --enable-dbg-qh         Enable queue-head debug messages
@@ -11151,8 +11151,8 @@ $as_echo_n "checking for common debug messages... " >&6; }
 # Check whether --enable-dbg-common was given.
 if test "${enable_dbg_common+set}" = set; then :
   enableval=$enable_dbg_common; case "$enableval" in
-  n | no) unset CONFIG_USB4RT_DBG_COMMON ;;
-  *) CONFIG_USB4RT_DBG_COMMON=y ;;
+  y | yes) CONFIG_USB4RT_DBG_COMMON=y ;;
+  *) unset CONFIG_USB4RT_DBG_COMMON ;;
   esac
 fi
 

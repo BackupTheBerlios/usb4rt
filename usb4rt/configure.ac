@@ -450,10 +450,10 @@ dnl ----- common ----------------------------------------------------
 AC_MSG_CHECKING(for common debug messages)
 
 AC_ARG_ENABLE(dbg-common,
-  AS_HELP_STRING([--disable-dbg-common], [Disable common debug messages]),
+  AS_HELP_STRING([--enable-dbg-common], [Enable common debug messages]),
   [case "$enableval" in
-  n | no) unset CONFIG_USB4RT_DBG_COMMON ;;
-  *) CONFIG_USB4RT_DBG_COMMON=y ;;
+  y | yes) CONFIG_USB4RT_DBG_COMMON=y ;;
+  *) unset CONFIG_USB4RT_DBG_COMMON ;;
   esac])
 
 AC_MSG_RESULT(${CONFIG_USB4RT_DBG_COMMON:-n})

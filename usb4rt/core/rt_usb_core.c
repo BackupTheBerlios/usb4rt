@@ -163,7 +163,7 @@ void nrt_usb_search_devices(struct hc_device *p_hcd)
                 else
                 {
                     alloc_bytes += sizeof(struct hub_device);
-                    DBG("RT-USBCORE: %d Byte allocated (%s %d Byte)\n",
+                    DBG("RT-USBCORE: %d Byte allocated (%s %zu Byte)\n",
                         alloc_bytes, "+", sizeof(struct hub_device));
                     p_hub->p_usbdev = p_new_usbdev;
                     p_hub->configured = 0;
@@ -264,7 +264,7 @@ void nrt_usb_search_devices(struct hc_device *p_hcd)
                     else
                     {
                         alloc_bytes += sizeof(struct hub_device);
-                        DBG("RT-USBCORE: %d Byte allocated (%s %d Byte)\n",
+                        DBG("RT-USBCORE: %d Byte allocated (%s %zu Byte)\n",
                             alloc_bytes, "+", sizeof(struct hub_device));
                         p_hub_new->p_usbdev = p_new_usbdev;
                         p_hub_new->configured = 0;
@@ -497,7 +497,7 @@ static void usb_clear_device(struct usb_device *p_usbdev)
                      p_usbdev->p_hub_desc);
             kfree(p_usbdev->p_hub_desc);
             alloc_bytes -= sizeof(hub_descriptor_t);
-            DBG("RT-USBCORE: %d Byte allocated (%s %d Byte)\n",
+            DBG("RT-USBCORE: %d Byte allocated (%s %zu Byte)\n",
                 alloc_bytes, "-", sizeof(hub_descriptor_t));
         }
         if (p_usbdev->p_cfg_desc)
@@ -1492,7 +1492,7 @@ int nrt_hcd_unregister_driver(struct hc_device *p_hcd)
             list_del_init(&p_hub->hub_list);
             kfree(p_hub);
             alloc_bytes -= sizeof(struct hub_device);
-            DBG("RT-USBCORE: %d Byte allocated (%s %d Byte)\n",
+            DBG("RT-USBCORE: %d Byte allocated (%s %zu Byte)\n",
                 alloc_bytes, "-", sizeof(struct hub_device));
         }
         p_list = p_next;
@@ -1599,12 +1599,12 @@ struct rt_urb *nrt_usb_alloc_urb(void)
         ERR("RT-USBCORE: [ERROR] No memory for RT-URB \n");
         return NULL;
     }
-    DBG("RT-USBCORE: URB 0x%p created (%d Byte)\n",
+    DBG("RT-USBCORE: URB 0x%p created (%zu Byte)\n",
         p_urb, sizeof(struct rt_urb));
     memset(p_urb, 0, sizeof(struct rt_urb));
 
     alloc_bytes += sizeof(struct rt_urb);
-    DBG("RT-USBCORE: %d Byte allocated (%s %d Byte)\n",
+    DBG("RT-USBCORE: %d Byte allocated (%s %zu Byte)\n",
         alloc_bytes, "+", sizeof(struct rt_urb));
 
     p_urb->p_setup_packet = NULL;
@@ -1626,7 +1626,7 @@ void nrt_usb_free_urb(struct rt_urb *p_urb)
     kfree(p_urb);
 
     alloc_bytes -= sizeof(struct rt_urb);
-    DBG("RT-USBCORE: %d Byte allocated (%s %d Byte)\n",
+    DBG("RT-USBCORE: %d Byte allocated (%s %zu Byte)\n",
         alloc_bytes, "-", sizeof(struct rt_urb));
 
 }
@@ -1656,12 +1656,12 @@ struct rt_urb *nrt_usb_alloc_ctrl_urb(void)
         return NULL;
     }
 
-    DBG("RT-USBCORE: URB 0x%p: Control-Request created (%d Byte)\n",
+    DBG("RT-USBCORE: URB 0x%p: Control-Request created (%zu Byte)\n",
         p_urb, sizeof(struct usb_ctrlrequest));
     memset(p_ctrl, 0, sizeof(struct usb_ctrlrequest));
 
     alloc_bytes += sizeof(struct usb_ctrlrequest);
-    DBG("RT-USBCORE: %d Byte allocated (%s %d Byte)\n",
+    DBG("RT-USBCORE: %d Byte allocated (%s %zu Byte)\n",
         alloc_bytes, "+", sizeof(struct usb_ctrlrequest));
 
     p_urb->p_setup_packet = p_ctrl;
@@ -1680,11 +1680,11 @@ void nrt_usb_free_ctrl_urb(struct rt_urb *p_urb)
     if (p_urb->p_setup_packet)
     {
         kfree(p_urb->p_setup_packet);
-        DBG("RT-USBCORE: URB 0x%p: Control-Request deleted (%d Byte)\n",
+        DBG("RT-USBCORE: URB 0x%p: Control-Request deleted (%zu Byte)\n",
             p_urb, sizeof(struct usb_ctrlrequest));
 
         alloc_bytes -= sizeof(struct usb_ctrlrequest);
-        DBG("RT-USBCORE: %d Byte allocated (%s %d Byte)\n",
+        DBG("RT-USBCORE: %d Byte allocated (%s %zu Byte)\n",
             alloc_bytes, "-", sizeof(struct usb_ctrlrequest));
     }
 
@@ -2203,7 +2203,7 @@ void mod_exit(void)
         kfree(p_hub);
 
         alloc_bytes -= sizeof(struct hub_device);
-        DBG("RT-USBCORE: %d Byte allocated (%s %d Byte)\n",
+        DBG("RT-USBCORE: %d Byte allocated (%s %zu Byte)\n",
             alloc_bytes, "-", sizeof(struct hub_device));
 
         p_list = p_next;

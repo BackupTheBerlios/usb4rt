@@ -116,9 +116,9 @@ static void dump_td_table(struct rt_privurb *p_purb, int all)
     token  = td_token(p_td);
     buffer = le32_to_cpu(p_td->buffer);
 
-    PRNT("%s  %4d 0x%p  0x%p  0x%p  0x%p  0x%p %4s %6d %6d %4x %6d %5s %4s %4s %4s %5s %3s %3s %3s %2s %3d %2d %2s\n",
+    PRNT("%s  %4d 0x%08llx  0x%08llx  0x%08llx  0x%08llx  0x%08llx %4s %6d %6d %4x %6d %5s %4s %4s %4s %5s %3s %3s %3s %2s %3d %2d %2s\n",
          "*", p_td->td_nr,
-         (void *)p_td->dma_handle, (void *)link, (void *)status, (void *)token, (void *)buffer,
+         (u64)p_td->dma_handle, (u64)link, (u64)status, (u64)token, (u64)buffer,
          (get_status_active(p_td) ? "X" : "-"), get_status_actlen(p_td), get_max_len(p_td), get_packet_type(p_td),
          get_status_errcount(p_td), (status & TD_STAT_STALLED) ? "X":"-", (status & TD_STAT_DBUFERR) ? "X":"-",
          (status & TD_STAT_BABBLE)?"X":"-", (status & TD_STAT_CRCTIMEO)? "X":"-", (status & TD_STAT_BITSTUFF) ? "X":"-",
@@ -142,9 +142,9 @@ static void dump_td_table(struct rt_privurb *p_purb, int all)
     token  = td_token(p_td);
     buffer = le32_to_cpu(p_td->buffer);
 
-    PRNT("%s  %4d 0x%p  0x%p  0x%p  0x%p  0x%p %4s %6d %6d %4x %6d %5s %4s %4s %4s %5s %3s %3s %3s %2s %3d %2d %2s\n",
+    PRNT("%s  %4d 0x%08llx  0x%08llx  0x%08llx  0x%08llx  0x%08llx %4s %6d %6d %4x %6d %5s %4s %4s %4s %5s %3s %3s %3s %2s %3d %2d %2s\n",
          "-", p_td->td_nr,
-         (void *)p_td->dma_handle, (void *)link, (void *)status, (void *)token, (void *)buffer,
+         (u64)p_td->dma_handle, (u64)link, (u64)status, (u64)token, (u64)buffer,
          (get_status_active(p_td) ? "X" : "-"), get_status_actlen(p_td), get_max_len(p_td), get_packet_type(p_td),
          get_status_errcount(p_td), (status & TD_STAT_STALLED) ? "X":"-", (status & TD_STAT_DBUFERR) ? "X":"-",
          (status & TD_STAT_BABBLE)?"X":"-", (status & TD_STAT_CRCTIMEO)? "X":"-", (status & TD_STAT_BITSTUFF) ? "X":"-",
@@ -367,7 +367,8 @@ static void destroy_flame_list(struct uhc_device *p_uhcd)
     return;
   }
 
-  DBG("RT-UHC-Driver: Deleting Framelist @ 0x%p (%d Byte)\n", p_uhcd->p_fl, sizeof(struct frame_list));
+  DBG("RT-UHC-Driver: Deleting Framelist @ 0x%p (%zu Byte)\n", p_uhcd->p_fl,
+      sizeof(struct frame_list));
 
   dma_free_coherent(&p_uhcd->p_pcidev->dev, sizeof(struct frame_list), p_uhcd->p_fl, p_uhcd->p_fl->dma_handle);
   p_uhcd->p_fl = NULL;
@@ -761,8 +762,8 @@ static int uhc_init(struct uhc_device *p_uhcd)
     ERR("RT-UHC-Driver: [ERROR] %s - Creating framelist failed\n", __FUNCTION__);
     return -1;
   }
-  DBG("RT-UHC-Driver: Framelist    @ 0x%p, DMA: 0x%p (%d Byte) \n",
-      (void *)p_uhcd->p_fl, (void *)p_uhcd->p_fl->dma_handle, sizeof(struct frame_list));
+  DBG("RT-UHC-Driver: Framelist    @ 0x%p, DMA: 0x%08llx (%zu Byte) \n",
+      p_uhcd->p_fl, (u64)p_uhcd->p_fl->dma_handle, sizeof(struct frame_list));
 
   /* 2. initialize skeleton */
   ret = init_skel(p_uhcd);
@@ -1447,7 +1448,7 @@ static int map_dma(struct rt_privurb *p_purb)
               }
             p_urb->setup_dma = dma_handle;
             DBG_MSG2(p_urb->p_hcd, p_urb->p_usbdev, " URB 0x%p: Setup-Packet "
-                     "@ 0x%p (%d Byte) mapped to DMA: 0x%p [OUT]\n", p_urb,
+                     "@ 0x%p (%zu Byte) mapped to DMA: 0x%p [OUT]\n", p_urb,
                      p_urb->p_setup_packet, sizeof(struct usb_ctrlrequest),
                      (void *)p_urb->setup_dma);
         }
@@ -1524,7 +1525,7 @@ static void unmap_dma(struct rt_privurb *p_purb)
                              PCI_DMA_FROMDEVICE : PCI_DMA_TODEVICE);
 
             DBG_MSG2(p_urb->p_hcd, p_urb->p_usbdev, " URB 0x%p: Unmap Setup-Packet "
-                     "@ 0x%p (%d Byte) from DMA: 0x%p\n",
+                     "@ 0x%p (%zu Byte) from DMA: 0x%p\n",
                      p_urb, p_purb->p_urb->p_setup_packet,
                      sizeof(struct usb_ctrlrequest),
                      (void *)p_purb->p_urb->setup_dma);

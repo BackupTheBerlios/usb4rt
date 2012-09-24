@@ -465,7 +465,7 @@ static void usb_init_device(struct usb_device *p_usbdev)
 
     p_usbdev->p_hcd       = NULL;
 
-    p_usbdev->lock        = SPIN_LOCK_UNLOCKED;
+    spin_lock_init(&p_usbdev->lock);
 
     // ENDPOINT 0
     p_usbdev->epmaxpacketin[0]  = 8;

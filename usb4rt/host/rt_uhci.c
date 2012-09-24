@@ -98,15 +98,15 @@ static void dump_td_table(struct rt_privurb *p_purb, int all)
 
   p_list = p_purb->active_td_list.next;
 
-  PRNT("========== DUMP TD-TABLE @ 0x%p (%d TDs, %d Byte) =========== \n", p_purb->p_td_table, p_purb->anz_tds, p_purb->table_size);
-  PRNT("   URB         @ 0x%p \n", p_purb->p_urb);
-  PRNT("   PRIVATE-URB @ 0x%p \n", p_purb);
+  TD_DBG("========== DUMP TD-TABLE @ 0x%p (%d TDs, %d Byte) =========== \n", p_purb->p_td_table, p_purb->anz_tds, p_purb->table_size);
+  TD_DBG("   URB         @ 0x%p \n", p_purb->p_urb);
+  TD_DBG("   PRIVATE-URB @ 0x%p \n", p_purb);
   if (p_purb->p_qh){
-    PRNT("   QH          @ 0x%p , DMA: 0x%p \n", p_purb->p_qh, (void *)p_purb->p_qh->dma_handle);
+    TD_DBG("   QH          @ 0x%p , DMA: 0x%p \n", p_purb->p_qh, (void *)p_purb->p_qh->dma_handle);
   }
 
 
-  PRNT("A    NR         TD        LINK      STATUS       TOKEN      BUFFER  ACT ACTLEN MAXLEN TYPE ERRCNT STALL DBUF BABL TIME BITST SPD IOC NAK DT ADR EP LS\n");
+  TD_DBG("A    NR         TD        LINK      STATUS       TOKEN      BUFFER  ACT ACTLEN MAXLEN TYPE ERRCNT STALL DBUF BABL TIME BITST SPD IOC NAK DT ADR EP LS\n");
 
   while (p_list != &p_purb->active_td_list){
     p_td = list_entry(p_list, td_t, active_td_list);
@@ -116,22 +116,22 @@ static void dump_td_table(struct rt_privurb *p_purb, int all)
     token  = td_token(p_td);
     buffer = le32_to_cpu(p_td->buffer);
 
-    PRNT("%s  %4d 0x%08llx  0x%08llx  0x%08llx  0x%08llx  0x%08llx %4s %6d %6d %4x %6d %5s %4s %4s %4s %5s %3s %3s %3s %2s %3d %2d %2s\n",
-         "*", p_td->td_nr,
-         (u64)p_td->dma_handle, (u64)link, (u64)status, (u64)token, (u64)buffer,
-         (get_status_active(p_td) ? "X" : "-"), get_status_actlen(p_td), get_max_len(p_td), get_packet_type(p_td),
-         get_status_errcount(p_td), (status & TD_STAT_STALLED) ? "X":"-", (status & TD_STAT_DBUFERR) ? "X":"-",
-         (status & TD_STAT_BABBLE)?"X":"-", (status & TD_STAT_CRCTIMEO)? "X":"-", (status & TD_STAT_BITSTUFF) ? "X":"-",
-         (status & TD_STAT_SPD) ? "X":"-", (status & TD_STAT_IOC) ?"X":"-", (status & TD_STAT_NAK) ? "X":"-",
-         (token & TD_TOKEN_TOGGLE) ? "1":"0", get_address(p_td), get_endpoint(p_td), (status & TD_STAT_LS) ? "X":"-");
+    TD_DBG("%s  %4d 0x%08llx  0x%08llx  0x%08llx  0x%08llx  0x%08llx %4s %6d %6d %4x %6d %5s %4s %4s %4s %5s %3s %3s %3s %2s %3d %2d %2s\n",
+           "*", p_td->td_nr,
+           (u64)p_td->dma_handle, (u64)link, (u64)status, (u64)token, (u64)buffer,
+           (get_status_active(p_td) ? "X" : "-"), get_status_actlen(p_td), get_max_len(p_td), get_packet_type(p_td),
+           get_status_errcount(p_td), (status & TD_STAT_STALLED) ? "X":"-", (status & TD_STAT_DBUFERR) ? "X":"-",
+           (status & TD_STAT_BABBLE)?"X":"-", (status & TD_STAT_CRCTIMEO)? "X":"-", (status & TD_STAT_BITSTUFF) ? "X":"-",
+           (status & TD_STAT_SPD) ? "X":"-", (status & TD_STAT_IOC) ?"X":"-", (status & TD_STAT_NAK) ? "X":"-",
+           (token & TD_TOKEN_TOGGLE) ? "1":"0", get_address(p_td), get_endpoint(p_td), (status & TD_STAT_LS) ? "X":"-");
     p_list = p_list->next;
   }
 
   if (!all){
-    PRNT("========== END DUMP ========= \n");
+    TD_DBG("========== END DUMP ========= \n");
     return;
   }
-  PRNT("------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+  TD_DBG("------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 
   p_list = p_purb->free_td_list.next;
   while (p_list != &p_purb->active_td_list){
@@ -142,18 +142,18 @@ static void dump_td_table(struct rt_privurb *p_purb, int all)
     token  = td_token(p_td);
     buffer = le32_to_cpu(p_td->buffer);
 
-    PRNT("%s  %4d 0x%08llx  0x%08llx  0x%08llx  0x%08llx  0x%08llx %4s %6d %6d %4x %6d %5s %4s %4s %4s %5s %3s %3s %3s %2s %3d %2d %2s\n",
-         "-", p_td->td_nr,
-         (u64)p_td->dma_handle, (u64)link, (u64)status, (u64)token, (u64)buffer,
-         (get_status_active(p_td) ? "X" : "-"), get_status_actlen(p_td), get_max_len(p_td), get_packet_type(p_td),
-         get_status_errcount(p_td), (status & TD_STAT_STALLED) ? "X":"-", (status & TD_STAT_DBUFERR) ? "X":"-",
-         (status & TD_STAT_BABBLE)?"X":"-", (status & TD_STAT_CRCTIMEO)? "X":"-", (status & TD_STAT_BITSTUFF) ? "X":"-",
-         (status & TD_STAT_SPD) ? "X":"-", (status & TD_STAT_IOC) ?"X":"-", (status & TD_STAT_NAK) ? "X":"-",
-         (token & TD_TOKEN_TOGGLE) ? "1":"0", get_address(p_td), get_endpoint(p_td), (status & TD_STAT_LS) ? "X":"-");
+    TD_DBG("%s  %4d 0x%08llx  0x%08llx  0x%08llx  0x%08llx  0x%08llx %4s %6d %6d %4x %6d %5s %4s %4s %4s %5s %3s %3s %3s %2s %3d %2d %2s\n",
+           "-", p_td->td_nr,
+           (u64)p_td->dma_handle, (u64)link, (u64)status, (u64)token, (u64)buffer,
+           (get_status_active(p_td) ? "X" : "-"), get_status_actlen(p_td), get_max_len(p_td), get_packet_type(p_td),
+           get_status_errcount(p_td), (status & TD_STAT_STALLED) ? "X":"-", (status & TD_STAT_DBUFERR) ? "X":"-",
+           (status & TD_STAT_BABBLE)?"X":"-", (status & TD_STAT_CRCTIMEO)? "X":"-", (status & TD_STAT_BITSTUFF) ? "X":"-",
+           (status & TD_STAT_SPD) ? "X":"-", (status & TD_STAT_IOC) ?"X":"-", (status & TD_STAT_NAK) ? "X":"-",
+           (token & TD_TOKEN_TOGGLE) ? "1":"0", get_address(p_td), get_endpoint(p_td), (status & TD_STAT_LS) ? "X":"-");
     p_list = p_list->next;
   }
 
-  PRNT("========== END DUMP ========= \n");
+  TD_DBG("========== END DUMP ========= \n");
 }
 
 static int create_td_table(struct rt_privurb *p_purb)

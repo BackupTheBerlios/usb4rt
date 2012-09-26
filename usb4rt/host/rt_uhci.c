@@ -1578,6 +1578,16 @@ static int wait_for_urb(struct rt_privurb *p_purb)
                   "completed in %llu ns @ %llu ns\n", p_purb->p_urb,
                   p_td->td_nr, time - time_old, time);
 
+        if (td_status(p_td) & TD_STAT_ANY_ERROR) {
+            DBG_MSG2(p_purb->p_hcd, p_purb->p_urb->p_usbdev, " ===> URB 0x%p: ERROR AT TD[%d]: %s%s%s%s%s\n", p_purb->p_urb, p_td->td_nr,
+                     (td_status(p_td) & TD_STAT_STALLED)  ? "STALL ":"",
+                     (td_status(p_td) & TD_STAT_DBUFERR)  ? "DATA-BUFFER ":"",
+                     (td_status(p_td) & TD_STAT_BABBLE)   ? "BABBLE ":"",
+                     (td_status(p_td) & TD_STAT_CRCTIMEO) ? "CRC or TIMEOUT ":"",
+                     (td_status(p_td) & TD_STAT_BITSTUFF) ? "BITSTUFF ":"");
+            return -1;
+        }
+
         if (!retrys) // timeout for this TD
         {
             DBG_MSG2(p_purb->p_hcd, p_purb->p_urb->p_usbdev, " URB 0x%p : "

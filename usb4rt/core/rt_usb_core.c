@@ -623,6 +623,13 @@ void usb_check_device(struct usb_device *p_usbdev)
     while (bytes > 0)
     {
         p_head = (struct usb_descriptor_header *)buffer;
+
+        if (p_head->bLength < sizeof(struct usb_descriptor_header)) {
+            ERR_MSG2(p_usbdev->p_hcd, p_usbdev,
+                     " Invalid descriptor (type: %d)\n",
+                     p_head->bDescriptorType);
+            break;
+        }
         switch(p_head->bDescriptorType)
         {
 

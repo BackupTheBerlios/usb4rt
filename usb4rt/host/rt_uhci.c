@@ -2166,7 +2166,6 @@ static inline int rt_uhci_send_busywait_urb(struct rt_privurb *p_purb)
 
   ret = wait_for_urb(p_purb);
   if (ret){
-    DBG_MSG2(p_urb->p_hcd, p_urb->p_usbdev, " URB 0x%p BUSY-WAIT -> TIMEOUT\n", p_urb);
     dump_td_table(p_purb, 0);
   }
 

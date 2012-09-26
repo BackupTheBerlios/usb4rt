@@ -758,6 +758,7 @@ struct usb_device *nrt_usb_config_dev(struct hc_device *p_hcd, __u8 rh_port_nr,
 
     unsigned char string[string_len];
     unsigned char buffer[m_buff_size];
+    int retries;
 
     DBG_MSG2(p_hcd, &usb_dev[0], " LOCK USB-Device[0]\n");
     if (!usb_lock_device(&usb_dev[0]))
@@ -798,15 +799,22 @@ struct usb_device *nrt_usb_config_dev(struct hc_device *p_hcd, __u8 rh_port_nr,
 
     len = 0x0008;
     DBG_MSG2(p_hcd, &usb_dev[0], " Get Device-Descriptor (first %d Byte)\n", len);
-    ret = nrt_intern_usb_control_msg(p_urb,
-                                     0x00,
-                                     USB_DIR_IN | USB_TYPE_STANDARD |
-                                     USB_RECIP_DEVICE,
-                                     USB_REQ_GET_DESCRIPTOR,
-                                     USB_DT_DEVICE << 8 | 0x00, // index
-                                     0x0000, // no language ID
-                                     len, // first 8 byte
-                                     p_dev_desc);
+
+    retries = 5;
+    do {
+        ret = nrt_intern_usb_control_msg(p_urb,
+                                         0x00,
+                                         USB_DIR_IN | USB_TYPE_STANDARD |
+                                         USB_RECIP_DEVICE,
+                                         USB_REQ_GET_DESCRIPTOR,
+                                         USB_DT_DEVICE << 8 | 0x00, // index
+                                         0x0000, // no language ID
+                                         len, // first 8 byte
+                                         p_dev_desc);
+        if (ret == len)
+            break;
+        mdelay(1);
+    } while (--retries > 0);
 
     if (ret < len)
     {
@@ -830,14 +838,20 @@ struct usb_device *nrt_usb_config_dev(struct hc_device *p_hcd, __u8 rh_port_nr,
     }
 
     INFO_MSG2(p_hcd, &usb_dev[0], " Setting Address %d\n", p_usbdev->address);
-    ret = nrt_intern_usb_control_msg(p_urb,
-                                     0x00, // endpoint
-                                     0x00,
-                                     USB_REQ_SET_ADDRESS,
-                                     0x0000 | p_usbdev->address,
-                                     0x0000,
-                                     0x0000,
-                                     NULL);
+    retries = 5;
+    do {
+        ret = nrt_intern_usb_control_msg(p_urb,
+                                         0x00, // endpoint
+                                         0x00,
+                                         USB_REQ_SET_ADDRESS,
+                                         0x0000 | p_usbdev->address,
+                                         0x0000,
+                                         0x0000,
+                                         NULL);
+        if (ret == 0)
+            break;
+        mdelay(1);
+    } while (--retries > 0);
 
     DBG_MSG2(p_hcd, &usb_dev[0], " UNLOCK USB-Device[0]\n");
     usb_unlock_device(&usb_dev[0]);

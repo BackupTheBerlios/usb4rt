@@ -25,7 +25,7 @@
 #include "rt_usb_core.h"
 #include "rt_usb_debug.h"
 #include "rt_usb_hub.h"
-#include <core/usb4rt_config.h>
+#include <corelib/usb4rt_config.h>
 
 #define DRIVER_VERSION  USB4RT_PACKAGE_VERSION
 #define DRIVER_AUTHOR "Joerg Langenberg - joerg.langenberg@gmx.net"

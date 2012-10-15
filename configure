@@ -714,7 +714,7 @@ PACKAGE_STRING='usb4rt 0.0.5'
 PACKAGE_BUGREPORT='usb4rt-users@lists.berlios.de'
 PACKAGE_URL=''
 
-ac_unique_file="core/rt_usb_core.c"
+ac_unique_file="corelib/rt_usb_core.c"
 ac_default_prefix=/usr/local/usb4rt
 # Factoring default headers for most tests.
 ac_includes_default="\
@@ -11293,7 +11293,7 @@ fi
 
 
 for DIR in \
-  core \
+  corelib \
   host \
   apps \
   drivers \
@@ -11303,7 +11303,7 @@ for DIR in \
 done
 
 
-ac_config_files="$ac_config_files GNUmakefile core/GNUmakefile host/GNUmakefile apps/GNUmakefile drivers/GNUmakefile config/GNUmakefile config/kconfig/GNUmakefile config/kconfig/lxdialog/GNUmakefile"
+ac_config_files="$ac_config_files GNUmakefile corelib/GNUmakefile host/GNUmakefile apps/GNUmakefile drivers/GNUmakefile config/GNUmakefile config/kconfig/GNUmakefile config/kconfig/lxdialog/GNUmakefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -12334,7 +12334,7 @@ do
     "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
     "${DIR}/Makefile") CONFIG_LINKS="$CONFIG_LINKS ${DIR}/Makefile:${DIR}/Makefile.kbuild" ;;
     "GNUmakefile") CONFIG_FILES="$CONFIG_FILES GNUmakefile" ;;
-    "core/GNUmakefile") CONFIG_FILES="$CONFIG_FILES core/GNUmakefile" ;;
+    "corelib/GNUmakefile") CONFIG_FILES="$CONFIG_FILES corelib/GNUmakefile" ;;
     "host/GNUmakefile") CONFIG_FILES="$CONFIG_FILES host/GNUmakefile" ;;
     "apps/GNUmakefile") CONFIG_FILES="$CONFIG_FILES apps/GNUmakefile" ;;
     "drivers/GNUmakefile") CONFIG_FILES="$CONFIG_FILES drivers/GNUmakefile" ;;
@@ -13738,16 +13738,16 @@ fi
 
 
 #
-# generate core/usb4rt_config.h
+# generate corelib/usb4rt_config.h
 #
-{ $as_echo "$as_me:${as_lineno-$LINENO}: creating core/usb4rt_config.h" >&5
-$as_echo "$as_me: creating core/usb4rt_config.h" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}: creating corelib/usb4rt_config.h" >&5
+$as_echo "$as_me: creating corelib/usb4rt_config.h" >&6;}
 sed -e "s/ PACKAGE/ USB4RT_PACKAGE/" -e "s/ VERSION/ USB4RT_VERSION/" \
-    config/usb4rt_config_pre.h > core/usb4rt_config.h.new
-if cmp -s core/usb4rt_config.h.new core/usb4rt_config.h; then
-    rm core/usb4rt_config.h.new
-    { $as_echo "$as_me:${as_lineno-$LINENO}: core/usb4rt_config.h is unchanged" >&5
-$as_echo "$as_me: core/usb4rt_config.h is unchanged" >&6;}
+    config/usb4rt_config_pre.h > corelib/usb4rt_config.h.new
+if cmp -s corelib/usb4rt_config.h.new corelib/usb4rt_config.h; then
+    rm corelib/usb4rt_config.h.new
+    { $as_echo "$as_me:${as_lineno-$LINENO}: corelib/usb4rt_config.h is unchanged" >&5
+$as_echo "$as_me: corelib/usb4rt_config.h is unchanged" >&6;}
 else
-    mv core/usb4rt_config.h.new core/usb4rt_config.h
+    mv corelib/usb4rt_config.h.new corelib/usb4rt_config.h
 fi

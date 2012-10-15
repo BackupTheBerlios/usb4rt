@@ -13,7 +13,7 @@ test "x$CONFIG_USB4RT_REVISION_LEVEL" = "x" && CONFIG_USB4RT_REVISION_LEVEL=0
 AC_CONFIG_HEADERS([config/usb4rt_config_pre.h])
 AC_CONFIG_AUX_DIR([config/autoconf])
 AC_CONFIG_MACRO_DIR([config/m4])
-AC_CONFIG_SRCDIR([core/rt_usb_core.c],
+AC_CONFIG_SRCDIR([corelib/rt_usb_core.c],
                  [host/rt_uhci.c],
                  [prog/rt_usb_ping.c
                 ])
@@ -542,7 +542,7 @@ dnl             create links to Makefiles used by linux-2.6.x
 dnl ======================================================================
 
 for DIR in \
-  core \
+  corelib \
   host \
   apps \
   drivers \
@@ -555,7 +555,7 @@ dnl             generate output
 dnl ======================================================================
 
 AC_CONFIG_FILES([GNUmakefile \
-                 core/GNUmakefile \
+                 corelib/GNUmakefile \
                  host/GNUmakefile \
                  apps/GNUmakefile \
 		 drivers/GNUmakefile \
@@ -570,14 +570,14 @@ dnl generate rack_config.h
 dnl ======================================================================
 
 #
-# generate core/usb4rt_config.h
+# generate corelib/usb4rt_config.h
 #
-AC_MSG_NOTICE([creating core/usb4rt_config.h])
+AC_MSG_NOTICE([creating corelib/usb4rt_config.h])
 sed -e "s/ PACKAGE/ USB4RT_PACKAGE/" -e "s/ VERSION/ USB4RT_VERSION/" \
-    config/usb4rt_config_pre.h > core/usb4rt_config.h.new
-if cmp -s core/usb4rt_config.h.new core/usb4rt_config.h; then
-    rm core/usb4rt_config.h.new
-    AC_MSG_NOTICE([core/usb4rt_config.h is unchanged])
+    config/usb4rt_config_pre.h > corelib/usb4rt_config.h.new
+if cmp -s corelib/usb4rt_config.h.new corelib/usb4rt_config.h; then
+    rm corelib/usb4rt_config.h.new
+    AC_MSG_NOTICE([corelib/usb4rt_config.h is unchanged])
 else
-    mv core/usb4rt_config.h.new core/usb4rt_config.h
+    mv corelib/usb4rt_config.h.new corelib/usb4rt_config.h
 fi

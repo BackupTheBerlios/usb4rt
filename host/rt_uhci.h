@@ -22,7 +22,7 @@
 
 #include <linux/pci.h>
 #include <rtdm/rtdm_driver.h>
-#include <core/rt_usb_core.h>
+#include <corelib/rt_usb_core.h>
 
 #define MAX_UHC_CONTROLLER      4
 

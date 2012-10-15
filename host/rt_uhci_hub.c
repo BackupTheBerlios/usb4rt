@@ -23,8 +23,8 @@
 
 #include "rt_uhci_hub.h"
 #include <rt_usb.h>
-#include <core/rt_usb_hub.h>
-#include <core/rt_usb_debug.h>
+#include <corelib/rt_usb_hub.h>
+#include <corelib/rt_usb_debug.h>
 
 extern struct uhc_device uhc_dev[MAX_UHC_CONTROLLER];
 

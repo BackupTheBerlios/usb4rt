@@ -21,7 +21,7 @@
 #ifndef RT_USB_DEBUG_H
 #define RT_USB_DEBUG_H
 
-#include <core/usb4rt_config.h>
+#include <corelib/usb4rt_config.h>
 #include <rt_usb.h>
 #include "rt_usb_hub.h"  // portstat_t
 

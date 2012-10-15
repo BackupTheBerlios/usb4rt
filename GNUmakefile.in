@@ -270,7 +270,7 @@ include_HEADERS = \
 	rt_usb.h
 
 SUBDIRS = \
-	core \
+	corelib \
 	host \
 	apps \
 	drivers \

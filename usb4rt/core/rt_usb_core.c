@@ -806,8 +806,7 @@ struct usb_device *nrt_usb_config_dev(struct hc_device *p_hcd, __u8 rh_port_nr,
 
     len = 0x0008;
     DBG_MSG2(p_hcd, &usb_dev[0], " Get Device-Descriptor (first %d Byte)\n", len);
-
-    retries = 5;
+    retries = 3;
     do {
         ret = nrt_intern_usb_control_msg(p_urb,
                                          0x00,
@@ -845,7 +844,7 @@ struct usb_device *nrt_usb_config_dev(struct hc_device *p_hcd, __u8 rh_port_nr,
     }
 
     INFO_MSG2(p_hcd, &usb_dev[0], " Setting Address %d\n", p_usbdev->address);
-    retries = 5;
+    retries = 3;
     do {
         ret = nrt_intern_usb_control_msg(p_urb,
                                          0x00, // endpoint
@@ -925,15 +924,21 @@ struct usb_device *nrt_usb_config_dev(struct hc_device *p_hcd, __u8 rh_port_nr,
     len = p_dev_desc->bLength;
 
     DBG_MSG2(p_hcd, p_usbdev, " Get Device-Descriptor (%d Byte)\n", len);
-    ret = nrt_intern_usb_control_msg(p_urb,
-                                     0x00,
-                                     USB_DIR_IN | USB_TYPE_STANDARD |
-                                     USB_RECIP_DEVICE,
-                                     USB_REQ_GET_DESCRIPTOR,
-                                     USB_DT_DEVICE << 8 | 0x00, // index
-                                     0x0000, // no language ID
-                                     len,
-                                     buffer);
+    retries = 3;
+    do {
+        ret = nrt_intern_usb_control_msg(p_urb,
+                                         0x00,
+                                         USB_DIR_IN | USB_TYPE_STANDARD |
+                                         USB_RECIP_DEVICE,
+                                         USB_REQ_GET_DESCRIPTOR,
+                                         USB_DT_DEVICE << 8 | 0x00, // index
+                                         0x0000, // no language ID
+                                         len,
+                                         buffer);
+        if (ret == len)
+            break;
+        mdelay(1);
+    } while (--retries > 0);
 
     if (ret < len)
     {
@@ -973,18 +978,26 @@ struct usb_device *nrt_usb_config_dev(struct hc_device *p_hcd, __u8 rh_port_nr,
     p_conf_desc = (struct usb_config_descriptor *)
                   (buffer + sizeof(struct usb_device_descriptor));
 
-    len = 0x0004;
+    len = USB_DT_CONFIG_SIZE;
     DBG_MSG2(p_hcd, p_usbdev, " Get Configuration-Descriptor (first %d Byte)\n",
              len);
-    ret = nrt_intern_usb_control_msg(p_urb,
-                                     0x00,
-                                     USB_DIR_IN | USB_TYPE_STANDARD |
-                                     USB_RECIP_DEVICE,
-                                     USB_REQ_GET_DESCRIPTOR,
-                                     USB_DT_CONFIG << 8 | 0x00,
-                                     0x0000,
-                                     len,
-                                     p_conf_desc);
+
+    retries = 3;
+    do {
+        ret = nrt_intern_usb_control_msg(p_urb,
+                                         0x00,
+                                         USB_DIR_IN | USB_TYPE_STANDARD |
+                                         USB_RECIP_DEVICE,
+                                         USB_REQ_GET_DESCRIPTOR,
+                                         USB_DT_CONFIG << 8 | 0x00,
+                                         0x0000,
+                                         len,
+                                         p_conf_desc);
+        if (ret == len)
+            break;
+        mdelay(1);
+    } while (--retries > 0);
+
     if (ret < len)
     {
         ERR_MSG2(p_hcd, p_usbdev, " Received / Sent only %d / %d Byte \n", ret, len);
@@ -995,15 +1008,22 @@ struct usb_device *nrt_usb_config_dev(struct hc_device *p_hcd, __u8 rh_port_nr,
 
     len = p_conf_desc->wTotalLength;
     DBG_MSG2(p_hcd, p_usbdev, " Get Configuration-Descriptor (%d Byte)\n", len);
-    ret = nrt_intern_usb_control_msg(p_urb,
-                                     0x00,
-                                     USB_DIR_IN | USB_TYPE_STANDARD |
-                                     USB_RECIP_DEVICE,
-                                     USB_REQ_GET_DESCRIPTOR,
-                                     USB_DT_CONFIG << 8 | 0x00, // Index
-                                     0x0000,
-                                     len,
-                                     p_conf_desc);
+    retries = 3;
+    do {
+        ret = nrt_intern_usb_control_msg(p_urb,
+                                         0x00,
+                                         USB_DIR_IN | USB_TYPE_STANDARD |
+                                         USB_RECIP_DEVICE,
+                                         USB_REQ_GET_DESCRIPTOR,
+                                         USB_DT_CONFIG << 8 | 0x00, // Index
+                                         0x0000,
+                                         len,
+                                         p_conf_desc);
+        if (ret == len)
+            break;
+        mdelay(1);
+    } while (--retries > 0);
+
     if (ret < len)
     {
         ERR_MSG2(p_hcd, p_usbdev, " Received / Sent only %d / %d Byte \n",
@@ -1040,16 +1060,22 @@ struct usb_device *nrt_usb_config_dev(struct hc_device *p_hcd, __u8 rh_port_nr,
 
     DBG_MSG2(p_hcd, p_usbdev, " Set Configuration 0x%0x\n",
               p_conf_desc->bConfigurationValue);
+    retries = 3;
+    do {
+        ret = nrt_intern_usb_control_msg(p_urb,
+                                         0x00,
+                                         USB_DIR_OUT | USB_TYPE_STANDARD |
+                                         USB_RECIP_DEVICE,
+                                         USB_REQ_SET_CONFIGURATION,
+                                         p_conf_desc->bConfigurationValue,
+                                         0x0000,
+                                         0x0000,
+                                         NULL);
+        if (ret == 0)
+            break;
+        mdelay(1);
+    } while (--retries > 0);
 
-    ret = nrt_intern_usb_control_msg(p_urb,
-                                     0x00,
-                                     USB_DIR_OUT | USB_TYPE_STANDARD |
-                                     USB_RECIP_DEVICE,
-                                     USB_REQ_SET_CONFIGURATION,
-                                     p_conf_desc->bConfigurationValue,
-                                     0x0000,
-                                     0x0000,
-                                     NULL);
     if (ret < 0)
     {
         ERR_MSG2(p_hcd, p_usbdev, " Can't set Configuration \n");

@@ -265,7 +265,7 @@ static inline unsigned int __create_pipe(struct usb_device *p_usbdev,
                                          ? (dev)->epmaxpacketout[usb_pipeendpoint(pipe)] \
                                          : (dev)->epmaxpacketin [usb_pipeendpoint(pipe)])
 
-#define usb_get_data_toggle(dev, pipe) (usb_pipeout(pipe) \
+#define usb_get_data_toggle(dev, pipe) (bool)(usb_pipeout(pipe) \
                                          ? ((dev)->toggle_mask[1] & (1 << usb_pipeendpoint(pipe))) \
                                          : ((dev)->toggle_mask[0] & (1 << usb_pipeendpoint(pipe))))
 

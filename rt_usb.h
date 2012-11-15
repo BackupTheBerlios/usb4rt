@@ -23,6 +23,7 @@
 
 #include <linux/types.h>
 #include <linux/version.h>
+#include <linux/list.h>
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,21)
 #include <linux/usb_ch9.h>
@@ -154,6 +155,8 @@ struct rt_urb
     uint64_t unschedule_time;               // unschedule time
 
     uint64_t timestamp_first_data;          // timestamp of first transferred data package
+
+    struct list_head entry;                 // for queuing at user side
 };
 
 

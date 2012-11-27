@@ -1295,26 +1295,6 @@ static int get_irq(struct uhc_device *p_uhcd)
     INFO("[OK]\n");
     p_uhcd->irq = wanted_irq;
 
-    INFO("RT-UHC-Driver: Enable  RTDM-IRQ %d ... ", wanted_irq);
-    ret = rtdm_irq_enable(&p_uhc_irq->irq_handle);
-    if (ret)
-    {
-        INFO("[BUSY]\n");
-
-        // delete rtdm interrupt
-        rtdm_irq_free(&p_uhc_irq->irq_handle);
-
-        // reset irq values of p_uhcd
-        p_uhcd->irq = 0;
-        list_del_init(&p_uhcd->irq_list);
-
-        // reset irq-values of struct uhc_irq
-        memset(p_uhc_irq, 0, sizeof(struct uhc_irq));
-        INIT_LIST_HEAD(&p_uhc_irq->irq_list);
-
-        return -EBUSY;
-    }
-    INFO("[OK]\n");
     return 0;
 }
 
@@ -1372,10 +1352,6 @@ static void put_irq(struct uhc_device *p_uhcd)
              release_irq);
         return;
     }
-
-    // irq-list is empty -> disable and delete rtdm irq
-    INFO("RT-UHC-Driver: Disable RTDM IRQ %d\n", release_irq);
-    rtdm_irq_disable(&p_uhc_irq->irq_handle);
 
     INFO("RT-UHC-Driver: Delete  RTDM IRQ %d\n", release_irq);
     rtdm_irq_free(&p_uhc_irq->irq_handle);

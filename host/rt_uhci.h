@@ -227,6 +227,8 @@ struct uhc_device {
   qh_t *p_qh_fullspeed;
   qh_t *p_qh_term;
   td_t *p_td_loop;
+
+  rtdm_lock_t hw_lock;
 };
 
 /* URB-STATUS */

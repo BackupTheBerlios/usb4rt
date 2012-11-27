@@ -802,6 +802,8 @@ static int uhc_init(struct uhc_device *p_uhcd)
     outw(0x1000, rh_port);
   }
 
+  rtdm_lock_init(&p_uhcd->hw_lock);
+
   return 0;
 }
 
@@ -1685,6 +1687,7 @@ static void rt_unschedule_ctrl_bulk_urb(struct rt_privurb *p_purb)
 {
   qh_t *p_urb_qh = NULL;
   qh_t *p_prev_qh;
+  rtdm_lockctx_t ctx;
 //  qh_t *p_next_qh;
 
   if (!p_purb){
@@ -1692,9 +1695,12 @@ static void rt_unschedule_ctrl_bulk_urb(struct rt_privurb *p_purb)
     return;
   }
 
+  rtdm_lock_get_irqsave(&p_purb->p_uhcd->hw_lock, ctx);
+
   p_urb_qh = p_purb->p_qh;
 
   if (list_empty(&p_urb_qh->qh_link_list)){
+    rtdm_lock_put_irqrestore(&p_purb->p_uhcd->hw_lock, ctx);
     ERR("[ERROR] %s - URB 0x%p: Not in QH-Link-List\n", __FUNCTION__, p_purb->p_urb);
     return;
   }
@@ -1733,11 +1739,11 @@ static void rt_unschedule_ctrl_bulk_urb(struct rt_privurb *p_purb)
   wmb();
   p_prev_qh->link = p_urb_qh->link;
 
+  rtdm_lock_put_irqrestore(&p_purb->p_uhcd->hw_lock, ctx);
+
       // Aus QH-Liste entfernen
   DBG_MSG2(p_purb->p_hcd, p_purb->p_urb->p_usbdev, " URB 0x%p: Remove from QH-List\n", p_purb->p_urb);
   list_del_init(&p_urb_qh->qh_link_list);
-
-  return;
 }
 
 //TODO
@@ -1757,12 +1763,15 @@ static int rt_schedule_ctrl_bulk_urb(struct rt_privurb *p_purb)
   qh_t *p_urb_qh = NULL;
   qh_t *p_prev_qh;
   qh_t *p_sched_qh;
+  rtdm_lockctx_t ctx;
 
   if (!p_purb){
     return -ENODEV;
   }
 
   p_urb_qh = p_purb->p_qh;
+
+  rtdm_lock_get_irqsave(&p_purb->p_uhcd->hw_lock, ctx);
 
   if (p_purb->p_urb->p_usbdev->speed == USB_SPEED_LOW){
     p_sched_qh = p_purb->p_uhcd->p_qh_lowspeed;
@@ -1811,6 +1820,8 @@ static int rt_schedule_ctrl_bulk_urb(struct rt_privurb *p_purb)
   p_urb_qh->link = p_prev_qh->link;
   wmb();
   p_prev_qh->link = cpu_to_le32(p_urb_qh->dma_handle | LINK_NO_TERM | LINK_TO_QH);
+
+  rtdm_lock_put_irqrestore(&p_purb->p_uhcd->hw_lock, ctx);
 
   return 0;
 }

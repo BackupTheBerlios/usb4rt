@@ -2007,7 +2007,7 @@ static int rt_uhci_send_bulk_urb(struct rt_privurb *p_purb)
   }
 
   if (out){
-   INFO("Sending %d Bytes: [0]: 0x%02x, [1]: 0x%02x \n",
+    DBG("Sending %d Bytes: [0]: 0x%02x, [1]: 0x%02x \n",
       remaining,
       *(unsigned char *)p_urb->p_transfer_buffer,
       *(unsigned char *)(p_urb->p_transfer_buffer+1));

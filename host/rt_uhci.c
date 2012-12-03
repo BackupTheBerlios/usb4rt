@@ -1118,9 +1118,9 @@ int rt_irq_handler(rtdm_irq_t *irq_handle)
       goto irq_next_uhc;                          /* searching */
     } else {                                      /* Interrupt-Controller found */
       DBG("UHC[%d]: Handling \n", p_uhcd->uhcd_nr);
+      outw(stat, p_uhcd->p_io->start + USBSTS);   /* Clear it */
       handle_controller(p_uhcd, stat);           /* handle this Controller */
       handled_uhc++;
-      outw(stat, p_uhcd->p_io->start + USBSTS);   /* Clear it */
     }
 
 irq_next_uhc:

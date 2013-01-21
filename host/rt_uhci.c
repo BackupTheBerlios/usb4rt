@@ -231,7 +231,7 @@ static td_t *create_td(struct uhc_device *p_uhcd)
   if (!p_td || !td_dma){
     return NULL;
   }
-  TD_DBG("RT-UHC-Driver: Creating TD @ 0x%p, DMA: 0x%p (%d Byte)\n", p_td, (void *)td_dma, sizeof(td_t));
+  TD_DBG("RT-UHC-Driver: Creating TD @ 0x%p, DMA: 0x%p (%zu Byte)\n", p_td, (void *)td_dma, sizeof(td_t));
 
   memset(p_td, 0, sizeof(td_t));
   p_td->link   = cpu_to_le32(LINK_TERM);
@@ -250,7 +250,7 @@ static void destroy_td(td_t *p_td)
     return;
   }
 
-  TD_DBG("RT-UHC-Driver: Deleting TD @ 0x%p (%d Byte)\n", p_td, sizeof(td_t));
+  TD_DBG("RT-UHC-Driver: Deleting TD @ 0x%p (%zu Byte)\n", p_td, sizeof(td_t));
 
   pci_free_consistent(p_td->p_uhcd->p_pcidev,
                       sizeof(td_t),
